@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini 代理</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+    h1 { font-size: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Gemini 代理服务</h1>
+  <p>服务运行中。兼容 OpenAI 格式，可在 Cherry Studio、ChatBox、Cursor 等客户端中使用。</p>
+  <ul>
+    <li>健康检查：<code>GET /health</code></li>
+    <li>模型列表：<code>GET /v1/models</code></li>
+    <li>对话接口：<code>POST /v1/chat/completions</code></li>
+  </ul>
+  <p>请在客户端中将 Token 设置为你的 <a href="https://aistudio.google.com/app/apikey">Gemini API Key</a>。</p>
+</body>
+</html>

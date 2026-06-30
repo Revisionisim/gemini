@@ -69,13 +69,33 @@ async function handleAPIRequest(req: Request): Promise<Response> {
   }
 }
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "*",
+  "Access-Control-Allow-Headers": "*",
+};
+
 async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
   console.log('Request URL:', req.url);
 
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   // WebSocket 处理
   if (req.headers.get("Upgrade")?.toLowerCase() === "websocket") {
     return handleWebSocket(req);
+  }
+
+  if (url.pathname === "/health" || url.pathname === "/") {
+    return new Response(JSON.stringify({
+      status: "ok",
+      service: "gemini-proxy",
+      endpoints: ["/v1/chat/completions", "/v1/models", "/v1/embeddings"],
+    }), {
+      headers: { ...corsHeaders, "content-type": "application/json" },
+    });
   }
 
   if (url.pathname.endsWith("/chat/completions") ||
@@ -84,7 +104,10 @@ async function handleRequest(req: Request): Promise<Response> {
     return handleAPIRequest(req);
   }
 
-  return new Response('ok');
+  return new Response(JSON.stringify({ error: "Not found" }), {
+    status: 404,
+    headers: { ...corsHeaders, "content-type": "application/json" },
+  });
 }
 
 Deno.serve(handleRequest); 
