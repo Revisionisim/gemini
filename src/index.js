@@ -1,12 +1,32 @@
 const assetManifest = {};
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': '*',
+  'Access-Control-Allow-Headers': '*',
+};
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
     // 处理 WebSocket 连接
     if (request.headers.get('Upgrade') === 'websocket') {
       return handleWebSocket(request, env);
+    }
+
+    if (url.pathname === '/health') {
+      return new Response(JSON.stringify({
+        status: 'ok',
+        service: 'gemini-proxy',
+        endpoints: ['/v1/chat/completions', '/v1/models', '/v1/embeddings'],
+      }), {
+        headers: { ...corsHeaders, 'content-type': 'application/json' },
+      });
     }
     
     // 添加 API 请求处理
